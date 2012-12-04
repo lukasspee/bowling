@@ -25,11 +25,11 @@ module Bowling
   module Frame
 
     def score
-      all_pins_down? ? (10 + bonus) : bare_score
+      bare_score + bonus
     end
 
     def bare_score
-      throws[0].to_i + throws[1].to_i
+      all_pins_down? ? 10 : (throws[0].to_i + throws[1].to_i)
     end
 
     def throws
