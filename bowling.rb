@@ -29,10 +29,10 @@ module Bowling
     end
 
     def bare_score
-      all_pins_down? ? 10 : (throws[0].to_i + throws[1].to_i)
+      all_pins_down? ? 10 : (shots[0].to_i + shots[1].to_i)
     end
 
-    def throws
+    def shots
       [text_value[0], text_value[1]].compact
     end
 
@@ -42,11 +42,11 @@ module Bowling
     end
 
     def spare?
-      throws[1] == '/'
+      shots[1] == '/'
     end
 
     def strike?
-      throws[0] == 'X'
+      shots[0] == 'X'
     end
 
     def all_pins_down?
@@ -55,7 +55,7 @@ module Bowling
 
     def bonus
       if spare?
-        next_frame.throws[0].to_i
+        next_frame.shots[0].to_i
       elsif strike?
         next_frame.bare_score
       else
