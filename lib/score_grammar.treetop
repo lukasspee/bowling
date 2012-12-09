@@ -1,19 +1,15 @@
 module Bowling
   grammar Score
     rule game
-      frame 10..10
+      frame frame frame frame frame frame frame frame frame frame bonus?
     end
 
     rule frame
-      (strike / double_throw) <Bowling::Frame>
+      ("X" / ([1-9-] [1-9/-])) <Bowling::Frame>
     end
 
-    rule strike
-      "X"
-    end
-
-    rule double_throw
-      [0-9-] [0-9/-]
+    rule bonus
+      [1-9X-] [1-9X/-]? <Bowling::BonusFrame>
     end
   end
 end

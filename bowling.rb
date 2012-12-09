@@ -15,7 +15,7 @@ module Bowling
     end
 
     def score
-      frames.inject(0) do |r, frame|
+      frames[0..9].inject(0) do |r, frame|
         r += frame.score
         r
       end
@@ -29,11 +29,19 @@ module Bowling
     end
 
     def bare_score
-      all_pins_down? ? 10 : (shots[0].to_i + shots[1].to_i)
+      shots[0] + shots[1].to_i
     end
 
     def shots
-      [text_value[0], text_value[1]].compact
+      @shots ||= begin
+        if text_value[0] == "X"
+          [ 10 ]
+        else
+          first  = text_value[0].to_i
+          second = text_value[1] == "/" ? 10 - first : text_value[1].to_i
+          [ first, second ]
+        end
+      end
     end
 
     def next_frame
@@ -42,11 +50,11 @@ module Bowling
     end
 
     def spare?
-      shots[1] == '/'
+      text_value[1] == "/"
     end
 
     def strike?
-      shots[0] == 'X'
+      text_value[0] == "X"
     end
 
     def all_pins_down?
@@ -55,12 +63,50 @@ module Bowling
 
     def bonus
       if spare?
-        next_frame.shots[0].to_i
+        next_frame.shots[0]
+      elsif strike? && !next_frame.bonus? && next_frame.strike?
+        next_frame.bare_score + next_frame.next_frame.shots[0]
       elsif strike?
         next_frame.bare_score
       else
         0
       end
+    end
+
+    def bonus?
+      false
+    end
+
+  end
+
+  module BonusFrame
+
+    def bare_score
+      shots[0] + shots[1].to_i
+    end
+
+    alias :score :bare_score
+
+    def shots
+      @shots ||= begin
+        first = text_value[0] == "X" ? 10 : text_value[0].to_i
+        shots = [ first ]
+        if text_value[1]
+          second = if text_value[1] == "X"
+            10
+          elsif text_value[1] == "/"
+            10 - first
+          else
+            text_value[1].to_i
+          end
+          shots << second
+        end
+        shots
+      end
+    end
+
+    def bonus?
+      true
     end
 
   end
