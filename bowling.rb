@@ -57,10 +57,6 @@ module Bowling
       text_value[0] == "X"
     end
 
-    def all_pins_down?
-      strike? || spare?
-    end
-
     def bonus
       if spare?
         next_frame.shots[0]
