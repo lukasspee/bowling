@@ -60,10 +60,12 @@ module Bowling
     def bonus
       if spare?
         next_frame.shots[0]
-      elsif strike? && !next_frame.bonus? && next_frame.strike?
-        next_frame.bare_score + next_frame.next_frame.shots[0]
       elsif strike?
-        next_frame.bare_score
+        if next_frame.bonus? || !next_frame.strike?
+          next_frame.bare_score
+        else
+          next_frame.bare_score + next_frame.next_frame.shots[0]
+        end
       else
         0
       end
@@ -80,8 +82,6 @@ module Bowling
     def bare_score
       shots[0] + shots[1].to_i
     end
-
-    alias :score :bare_score
 
     def shots
       @shots ||= begin
